@@ -695,6 +695,14 @@ export interface ApiBlogArticleBlogArticle extends Schema.CollectionType {
     author: Attribute.String & Attribute.Required;
     isHighlight: Attribute.Boolean & Attribute.DefaultTo<false>;
     datePublished: Attribute.Date;
+    articleContent: Attribute.DynamicZone<
+      [
+        'blog-article.headline',
+        'blog-article.paragraph-with-image',
+        'blog-article.paragraph',
+        'blog-article.landscape-image'
+      ]
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -819,6 +827,32 @@ export interface ApiInfoblockHomeInfoblockHome extends Schema.SingleType {
   };
 }
 
+export interface ApiTestTest extends Schema.SingleType {
+  collectionName: 'tests';
+  info: {
+    singularName: 'test';
+    pluralName: 'tests';
+    displayName: 'test';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    blog_article: Attribute.Relation<
+      'api::test.test',
+      'oneToOne',
+      'api::blog-article.blog-article'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::test.test', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::test.test', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Shared {
     export interface ContentTypes {
@@ -839,6 +873,7 @@ declare module '@strapi/strapi' {
       'api::info-block.info-block': ApiInfoBlockInfoBlock;
       'api::infoblock-experience.infoblock-experience': ApiInfoblockExperienceInfoblockExperience;
       'api::infoblock-home.infoblock-home': ApiInfoblockHomeInfoblockHome;
+      'api::test.test': ApiTestTest;
     }
   }
 }
